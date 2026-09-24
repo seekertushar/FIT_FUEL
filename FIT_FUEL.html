@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Unit 1: SEO Basics (Meta tags and Title) -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FIT FUEL - GenZ Fitness, Home Workouts, Bodybuilding & Diet Tracker">
+    <title>FIT FUEL | Level Up Your Physique</title>
+
+    <!-- Unit 2: Tailwind CSS Integration -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Unit 2: Custom CSS for Box Model, Selectors, Positioning & Z-index -->
+    <style>
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: #0f172a; /* Deep Slate */
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        /* Catchy Neon Gradient Text with Browser Fallback */
+        .neon-text {
+            color: #00f2fe; /* BUG FIX: Fallback color so text never goes invisible */
+            background: linear-gradient(to right, #00f2fe, #4facfe, #f093fb, #f5576c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Hero Background with Positioning & Z-index */
+        .hero-bg {
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.95)),
+                        url('https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=1469&auto=format&fit=crop') center/cover fixed;
+        }
+
+        /* Unit 2: CSS Box Model & Transitions for glassmorphism */
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 242, 254, 0.15);
+        }
+
+        /* Unit 1 & 2: Table Styling overriding Tailwind for custom borders */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            text-align: left;
+        }
+        th {
+            background-color: rgba(15, 23, 42, 0.6);
+            color: #00f2fe;
+        }
+    </style>
+</head>
+<body class="antialiased scroll-smooth">
+
+    <!-- Navbar: Flexbox Layout -->
+    <header class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="cursor-pointer hover:scale-105 transition-transform duration-300">
+                <span class="text-3xl font-black neon-text tracking-tighter">FIT</span>
+                <span class="text-2xl font-bold text-white">FUEL</span>
+            </div>
+            <nav class="hidden md:flex gap-8">
+                <a href="#tracker" class="text-sm font-bold uppercase tracking-widest hover:text-cyan-400 transition-colors">Stats</a>
+                <a href="#bmi-guide" class="text-sm font-bold uppercase tracking-widest hover:text-pink-400 transition-colors">BMI Guide</a>
+                <a href="#dynamicPlans" class="text-sm font-bold uppercase tracking-widest hover:text-cyan-400 transition-colors">Fuel</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section: Responsive Page Design -->
+    <section id="hero" class="hero-bg min-h-[75vh] flex flex-col justify-center items-center text-center px-4">
+        <div class="inline-block px-4 py-1 rounded-full border border-pink-400 text-pink-400 text-sm font-bold mb-6 animate-pulse">
+            V 3.1 // BUG FIXES APPLIED
+        </div>
+        <h1 class="text-5xl md:text-7xl font-black text-white mb-6 uppercase tracking-tight drop-shadow-2xl">
+            Build Your <br> <span class="neon-text">Legacy</span>
+        </h1>
+        <p class="text-lg text-slate-300 max-w-2xl mb-10 font-medium">
+            Enter your exact stats. Tell us your goal. We generate a custom diet (for your budget) and workout plan (Home or Gym) tailored just for you.
+        </p>
+        <a href="#tracker" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-pink-500 hover:to-orange-500 text-white px-10 py-4 rounded-full font-black text-lg transition-all duration-500 shadow-[0_0_20px_rgba(0,242,254,0.4)] hover:scale-110">
+            START QUEST
+        </a>
+    </section>
+
+    <!-- Main Content (Unit 2: Grid & Margins/Padding) -->
+    <main class="max-w-7xl mx-auto px-4 py-20 space-y-24">
+
+        <!-- Calculator Form & Stats Output -->
+        <section id="tracker" class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            
+            <!-- Unit 1: Forms with Expanded Units and Goals -->
+            <div class="glass-card p-8">
+                <h2 class="text-3xl font-black text-white mb-8 border-b border-slate-700 pb-4">Player Stats</h2>
+                
+                <!-- BUG FIX: Added onsubmit="event.preventDefault();" to stop the page from refreshing -->
+                <form id="statsForm" class="space-y-6" onsubmit="event.preventDefault(); calculateStats();">
+                    
+                    <!-- Height Input with Multiple Units -->
+                    <div>
+                        <label class="block text-sm font-bold text-slate-400 mb-2">Height</label>
+                        <div class="flex gap-4">
+                            <input type="number" id="heightVal" step="0.01" required placeholder="e.g. 175" class="w-2/3 bg-slate-800 border border-slate-600 rounded-xl p-3 text-white focus:outline-none focus:border-cyan-400 transition-colors">
+                            <select id="heightUnit" class="w-1/3 bg-slate-800 border border-slate-600 rounded-xl p-3 text-white focus:outline-none focus:border-cyan-400 cursor-pointer">
+                                <option value="cm">cm</option>
+                                <option value="m">Meters</option>
+                                <option value="in">Inches</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Weight Input with Multiple Units -->
+                    <div>
+                        <label class="block text-sm font-bold text-slate-400 mb-2">Weight</label>
+                        <div class="flex gap-4">
+                            <input type="number" id="weightVal" step="0.1" required placeholder="e.g. 70" class="w-2/3 bg-slate-800 border border-slate-600 rounded-xl p-3 text-white focus:outline-none focus:border-pink-400 transition-colors">
+                            <select id="weightUnit" class="w-1/3 bg-slate-800 border border-slate-600 rounded-xl p-3 text-white focus:outline-none focus:border-pink-400 cursor-pointer">
+                                <option value="kg">kg</option>
+                                <option value="lbs">lbs</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Expanded Gen-Z / Trendy Fitness Goals -->
+                    <div>
+                        <label class="block text-sm font-bold text-slate-400 mb-2">Current Mission (Goal)</label>
+                        <select id="goal" class="w-full bg-slate-800 border border-slate-600 rounded-xl p-3 text-white focus:outline-none focus:border-cyan-400 cursor-pointer">
+                            <option value="cut">Shredding (Weight Loss)</option>
+                            <option value="bulk">Bulking (Weight Gain)</option>
+                            <option value="maintain">Maingaining (Maintenance)</option>
+                            <option value="strength">Powerlifting (Strength Gain)</option>
+                            <option value="aesthetics">Bodybuilding (Aesthetics)</option>
+                            <option value="hyrox">Hyrox / Functional Fitness</option>
+                            <option value="endurance">Endurance (Marathon/Cardio)</option>
+                        </select>
+                    </div>
+
+                    <!-- BUG FIX: Changed type to "submit" to properly trigger the form check -->
+                    <button type="submit" class="w-full bg-slate-100 text-slate-900 hover:bg-cyan-400 font-black text-lg py-4 rounded-xl transition-all duration-300 mt-4 shadow-lg shadow-cyan-500/20">
+                        ANALYZE STATS
+                    </button>
+                </form>
+            </div>
+
+            <!-- Output Display -->
+            <div class="glass-card p-8 flex flex-col justify-center items-center text-center relative overflow-hidden">
+                <div id="defaultUI">
+                    <p class="text-slate-400 font-medium">Enter your details to calculate your BMI and unlock your dynamic diet and workout plans.</p>
+                </div>
+
+                <div id="resultUI" class="hidden z-10 w-full">
+                    <h3 class="text-sm font-bold tracking-widest text-slate-400 uppercase mb-2">Your BMI Score</h3>
+                    <div id="bmiOutput" class="text-7xl font-black neon-text mb-4">0.0</div>
+                    
+                    <div id="catOutput" class="inline-block text-white font-bold px-6 py-2 rounded-full border mb-4">
+                        Category
+                    </div>
+                    
+                    <!-- Easy to understand explanation -->
+                    <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-600 text-left">
+                        <span class="block text-xs font-bold text-pink-400 uppercase mb-1">Why am I in this category?</span>
+                        <p id="funMessage" class="text-slate-300 font-medium text-sm leading-relaxed">Data analyzed.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BMI Educational Guide -->
+        <section id="bmi-guide" class="glass-card p-10">
+            <h2 class="text-3xl font-black text-center mb-4 text-white">How Does The BMI Scale Work?</h2>
+            <p class="text-center text-slate-300 mb-8 max-w-2xl mx-auto text-sm">
+                BMI (Body Mass Index) compares your weight to your height. Here is the standard medical breakdown so you understand exactly what your numbers mean:
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+                <div class="bg-blue-900/40 p-4 rounded-xl border border-blue-500/50 hover:bg-blue-900/60 transition">
+                    <div class="text-2xl font-black text-blue-400">Under 18.5</div>
+                    <div class="text-sm font-bold text-white mt-1">Underweight</div>
+                    <div class="text-xs text-slate-400 mt-2">Weight is too low for your height. Need to eat more calories.</div>
+                </div>
+                <div class="bg-green-900/40 p-4 rounded-xl border border-green-500/50 hover:bg-green-900/60 transition">
+                    <div class="text-2xl font-black text-green-400">18.5 - 24.9</div>
+                    <div class="text-sm font-bold text-white mt-1">Normal Weight</div>
+                    <div class="text-xs text-slate-400 mt-2">Healthy ratio of height and weight. Best for overall longevity.</div>
+                </div>
+                <div class="bg-orange-900/40 p-4 rounded-xl border border-orange-500/50 hover:bg-orange-900/60 transition">
+                    <div class="text-2xl font-black text-orange-400">25.0 - 29.9</div>
+                    <div class="text-sm font-bold text-white mt-1">Overweight</div>
+                    <div class="text-xs text-slate-400 mt-2">Slightly heavier than recommended. Slight diet tweaks needed.</div>
+                </div>
+                <div class="bg-red-900/40 p-4 rounded-xl border border-red-500/50 hover:bg-red-900/60 transition">
+                    <div class="text-2xl font-black text-pink-500">30.0 +</div>
+                    <div class="text-sm font-bold text-white mt-1">Obese</div>
+                    <div class="text-xs text-slate-400 mt-2">High body fat risk. Strict caloric deficit highly recommended.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DYNAMIC PLANS SECTION -->
+        <section id="dynamicPlans" class="hidden space-y-12">
+            <h1 class="text-4xl md:text-5xl font-black text-center text-white neon-text mb-12">Your Action Plan</h1>
+            
+            <!-- TRACK 1: CUT / ENDURANCE (Weight Loss) -->
+            <div id="plan-cut" class="hidden space-y-8 animate-fade-in">
+                <div class="bg-gradient-to-r from-pink-500/20 to-purple-500/20 p-6 rounded-2xl border border-pink-500/30">
+                    <h2 class="text-2xl font-bold text-pink-400 mb-2">🔥 Mission: Shred Fat & Lose Weight</h2>
+                    <p class="text-slate-300 text-sm">To hit your goal, you MUST be in a <strong>Caloric Deficit</strong> (eating fewer calories than you burn). Follow these high-protein meals to stay full.</p>
+                </div>
+                
+                <div class="glass-card p-6">
+                    <h3 class="text-xl font-bold text-white mb-4">Diet Fuel Options (Weight Loss)</h3>
+                    <div class="overflow-x-auto">
+                        <table>
+                            <tr>
+                                <th>Meal</th>
+                                <th class="text-cyan-300">Student Budget (Affordable)</th>
+                                <th class="text-pink-300">Standard / Premium Budget</th>
+                            </tr>
+                            <tr>
+                                <td class="font-bold text-white">Breakfast</td>
+                                <td>3 Boiled Egg Whites, 1 Whole Egg, Oats (Water)</td>
+                                <td>Avocado Toast, Smoked Salmon, Black Coffee</td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold text-white">Lunch</td>
+                                <td>1 Roti, Lots of Dal, Soya Chunks (Nutrela)</td>
+                                <td>Grilled Chicken Breast, Brown Rice, Broccoli</td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold text-white">Dinner</td>
+                                <td>Cucumber/Tomato Salad, Clear Veg Soup</td>
+                                <td>Tofu or White Fish, Zucchini Noodles</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="glass-card p-6 border-t-4 border-cyan-400">
+                        <h3 class="text-xl font-bold text-cyan-400 mb-4">🏠 Home Workout (Fat Burn)</h3>
+                        <ul class="list-disc list-inside text-slate-300 space-y-2 text-sm">
+                            <li>Jumping Jacks: 4 sets of 45 secs</li>
+                            <li>Bodyweight Squats: 4 sets of 20</li>
+                            <li>Knee Pushups: 4 sets to failure</li>
+                            <li>Plank Holds: 4 sets of 30 secs</li>
+                            <li>Burpees: 3 sets of 10</li>
+                            <li><span class="text-white font-bold">Rule:</span> Hit 10,000 steps daily!</li>
+                        </ul>
+                    </div>
+                    <div class="glass-card p-6 border-t-4 border-pink-400">
+                        <h3 class="text-xl font-bold text-pink-400 mb-4">🏋️ Gym Workout (Aesthetics/Cut)</h3>
+                        <ul class="list-disc list-inside text-slate-300 space-y-2 text-sm">
+                            <li>15 mins Incline Treadmill Walk (Warmup)</li>
+                            <li>Dumbbell Incline Press: 3x12</li>
+                            <li>Lat Pulldowns: 3x12</li>
+                            <li>Leg Press: 3x15</li>
+                            <li>Cable Crunches: 3x20</li>
+                            <li><span class="text-white font-bold">Rule:</span> Keep rest under 60 secs!</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TRACK 2: BULK / STRENGTH / AESTHETICS (Weight Gain) -->
+            <div id="plan-bulk" class="hidden space-y-8 animate-fade-in">
+                <div class="bg-gradient-to-r from-cyan-500/20 to-blue-500/20 p-6 rounded-2xl border border-cyan-500/30">
+                    <h2 class="text-2xl font-bold text-cyan-400 mb-2">💪 Mission: Build Muscle & Gain Mass</h2>
+                    <p class="text-slate-300 text-sm">To hit your goal, you MUST be in a <strong>Caloric Surplus</strong> (eating more calories than you burn). Lift heavy and eat big.</p>
+                </div>
+                
+                <div class="glass-card p-6">
+                    <h3 class="text-xl font-bold text-white mb-4">Diet Fuel Options (Weight Gain)</h3>
+                    <div class="overflow-x-auto">
+                        <table>
+                            <tr>
+                                <th>Meal</th>
+                                <th class="text-cyan-300">Student Budget (Affordable)</th>
+                                <th class="text-pink-300">Standard / Premium Budget</th>
+                            </tr>
+                            <tr>
+                                <td class="font-bold text-white">Breakfast</td>
+                                <td>4 Whole Eggs, 2 Bananas, Peanut Butter Toast</td>
+                                <td>Greek Yogurt, Whey Protein, Mixed Nuts</td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold text-white">Lunch</td>
+                                <td>Large portion Rice, Dal, Potato Sabzi</td>
+                                <td>Large Quinoa bowl, Steak/Beef, Olive Oil</td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold text-white">Dinner</td>
+                                <td>Paneer/Chicken, 4 Rotis, 1 Glass Milk</td>
+                                <td>Salmon, Sweet Potato Mash, Asparagus</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="glass-card p-6 border-t-4 border-cyan-400">
+                        <h3 class="text-xl font-bold text-cyan-400 mb-4">🏠 Home Workout (Hypertrophy)</h3>
+                        <ul class="list-disc list-inside text-slate-300 space-y-2 text-sm">
+                            <li>Standard Pushups: 4 sets to failure</li>
+                            <li>Doorway Rows / Pullups: 4 sets</li>
+                            <li>Bulgarian Split Squats (use a chair): 3x12 per leg</li>
+                            <li>Chair Dips (Triceps): 3x15</li>
+                            <li>Pike Pushups (Shoulders): 3x10</li>
+                            <li><span class="text-white font-bold">Rule:</span> Eat a huge meal right after!</li>
+                        </ul>
+                    </div>
+                    <div class="glass-card p-6 border-t-4 border-pink-400">
+                        <h3 class="text-xl font-bold text-pink-400 mb-4">🏋️ Gym Workout (Heavy Lifting)</h3>
+                        <ul class="list-disc list-inside text-slate-300 space-y-2 text-sm">
+                            <li>Barbell Squats: 4 sets of 5-8 reps</li>
+                            <li>Barbell Bench Press: 4 sets of 5-8 reps</li>
+                            <li>Deadlifts: 3 sets of 5 reps</li>
+                            <li>Overhead Press: 3 sets of 8-10 reps</li>
+                            <li>Bicep Curls: 3 sets of 12</li>
+                            <li><span class="text-white font-bold">Rule:</span> Lift heavy, rest 2-3 mins between sets.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TRACK 3: MAINTAIN / HYROX (Maintenance) -->
+            <div id="plan-maintain" class="hidden space-y-8 animate-fade-in">
+                <div class="bg-gradient-to-r from-orange-500/20 to-yellow-500/20 p-6 rounded-2xl border border-orange-500/30">
+                    <h2 class="text-2xl font-bold text-orange-400 mb-2">⚖️ Mission: Maintain & Functional Fitness</h2>
+                    <p class="text-slate-300 text-sm">Eat at <strong>Maintenance Calories</strong> (eating exactly what you burn). Focus on longevity, stamina, and feeling good.</p>
+                </div>
+                
+                <div class="glass-card p-6">
+                    <h3 class="text-xl font-bold text-white mb-4">Diet Fuel Options (Maintenance)</h3>
+                    <div class="overflow-x-auto">
+                        <table>
+                            <tr>
+                                <th>Meal</th>
+                                <th class="text-cyan-300">Student Budget (Affordable)</th>
+                                <th class="text-pink-300">Standard / Premium Budget</th>
+                            </tr>
+                            <tr>
+                                <td class="font-bold text-white">Breakfast</td>
+                                <td>Poha/Upma, 1 Apple, Black Tea</td>
+                                <td>Oatmeal with Berries, 2 Whole Eggs</td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold text-white">Lunch</td>
+                                <td>2 Rotis, Normal Sabzi, 1 Bowl Dal, Curd</td>
+                                <td>Chicken/Tofu Wrap with Green Salad</td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold text-white">Dinner</td>
+                                <td>Rice, Dal, Green Salad</td>
+                                <td>Grilled Fish, Brown Rice, Steamed Veggies</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="glass-card p-6 border-t-4 border-cyan-400">
+                        <h3 class="text-xl font-bold text-cyan-400 mb-4">🏠 Home Workout (Mobility/HIIT)</h3>
+                        <ul class="list-disc list-inside text-slate-300 space-y-2 text-sm">
+                            <li>10 Mins Yoga / Dynamic Stretching</li>
+                            <li>Mountain Climbers: 3x30 secs</li>
+                            <li>Alternating Lunges: 3x20</li>
+                            <li>Basic Crunches: 3x15</li>
+                            <li>Brisk 30-min walk outside</li>
+                            <li><span class="text-white font-bold">Rule:</span> Focus on flexibility and heart health!</li>
+                        </ul>
+                    </div>
+                    <div class="glass-card p-6 border-t-4 border-pink-400">
+                        <h3 class="text-xl font-bold text-pink-400 mb-4">🏋️ Gym Workout (Hyrox/Functional)</h3>
+                        <ul class="list-disc list-inside text-slate-300 space-y-2 text-sm">
+                            <li>2000m Rowing Machine</li>
+                            <li>Kettlebell Swings: 3x15</li>
+                            <li>Farmers Carry: 3x40 meters</li>
+                            <li>Wall Balls or Thrusters: 3x12</li>
+                            <li>Machine Chest Press: 3x10</li>
+                            <li><span class="text-white font-bold">Rule:</span> Keep intensity high, sweat it out!</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-950 py-8 text-center border-t border-slate-800">
+        <p class="text-slate-500 font-medium text-sm">
+            FIT FUEL &copy; 2026. Built with pure HTML/CSS. Level up safely.
+        </p>
+    </footer>
+
+    <!-- Script Logic -->
+    <script>
+        // Check for saved data on page load
+        window.onload = function() {
+            if(localStorage.getItem('ff_bmi_v3_fixed')) {
+                document.getElementById('defaultUI').classList.add('hidden');
+                document.getElementById('resultUI').classList.remove('hidden');
+                
+                document.getElementById('bmiOutput').innerText = localStorage.getItem('ff_bmi_v3_fixed');
+                document.getElementById('catOutput').innerText = localStorage.getItem('ff_cat_v3_fixed');
+                document.getElementById('catOutput').className = localStorage.getItem('ff_class_v3_fixed');
+                document.getElementById('funMessage').innerText = "Welcome back! Your previous stats were saved locally.";
+            }
+        };
+
+        function calculateStats() {
+            // Get inputs
+            let height = parseFloat(document.getElementById('heightVal').value);
+            let heightUnit = document.getElementById('heightUnit').value;
+            let weight = parseFloat(document.getElementById('weightVal').value);
+            let weightUnit = document.getElementById('weightUnit').value;
+            let goal = document.getElementById('goal').value;
+
+            if (isNaN(height) || isNaN(weight) || height <= 0 || weight <= 0) {
+                alert("Please input valid numbers for your stats.");
+                return;
+            }
+
+            // Convert to Standard Metric (Meters and KG) for formula
+            let heightInMeters = 0;
+            if (heightUnit === 'cm') heightInMeters = height / 100;
+            else if (heightUnit === 'm') heightInMeters = height;
+            else if (heightUnit === 'in') heightInMeters = height * 0.0254; 
+
+            let weightInKg = 0;
+            if (weightUnit === 'kg') weightInKg = weight;
+            else if (weightUnit === 'lbs') weightInKg = weight * 0.453592; 
+
+            // Calculate BMI
+            let bmi = (weightInKg / (heightInMeters * heightInMeters)).toFixed(1);
+            
+            // Determine BMI Category & Explanation text
+            let category = '';
+            let explanation = '';
+            let badgeClass = 'inline-block text-white font-bold px-6 py-2 rounded-full border mb-4 shadow-lg ';
+
+            if (bmi < 18.5) {
+                category = 'Underweight';
+                badgeClass += 'bg-blue-600/80 border-blue-400';
+                explanation = `Your BMI is ${bmi}. This is lower than the healthy 18.5 baseline. It means your body weight is too low for your height. Your primary mission is to eat more calories to fuel your body properly!`;
+            } else if (bmi >= 18.5 && bmi <= 24.9) {
+                category = 'Normal Weight';
+                badgeClass += 'bg-green-600/80 border-green-400';
+                explanation = `Your BMI is ${bmi}, which sits perfectly in the healthy 18.5-24.9 zone! Your weight is perfectly balanced for your height. Focus on getting stronger and maintaining this elite ratio.`;
+            } else if (bmi >= 25 && bmi <= 29.9) {
+                category = 'Overweight';
+                badgeClass += 'bg-orange-600/80 border-orange-400';
+                explanation = `Your BMI is ${bmi}. Crossing the 25.0 mark means you carry slightly more weight than recommended for your height. Minor diet adjustments (caloric deficit) will easily drop this down!`;
+            } else {
+                category = 'Obese';
+                badgeClass += 'bg-pink-600/80 border-pink-400';
+                explanation = `Your BMI is ${bmi} (30.0+). This indicates a high level of body fat relative to your height. Following a strict caloric deficit diet is highly recommended for your well-being.`;
+            }
+
+            // Update BMI UI
+            document.getElementById('defaultUI').classList.add('hidden');
+            let resUI = document.getElementById('resultUI');
+            resUI.classList.remove('hidden');
+            
+            document.getElementById('bmiOutput').innerText = bmi;
+            document.getElementById('catOutput').innerText = category;
+            document.getElementById('catOutput').className = badgeClass;
+            document.getElementById('funMessage').innerText = explanation;
+            
+            // Save to localStorage 
+            localStorage.setItem('ff_bmi_v3_fixed', bmi);
+            localStorage.setItem('ff_cat_v3_fixed', category);
+            localStorage.setItem('ff_class_v3_fixed', badgeClass);
+
+            // DYNAMIC PLAN MAPPING LOGIC
+            document.getElementById('dynamicPlans').classList.remove('hidden');
+            
+            // Hide all first
+            document.getElementById('plan-cut').classList.add('hidden');
+            document.getElementById('plan-bulk').classList.add('hidden');
+            document.getElementById('plan-maintain').classList.add('hidden');
+
+            // Route the 7 goals into the 3 main tracks
+            if(goal === 'cut' || goal === 'endurance') {
+                document.getElementById('plan-cut').classList.remove('hidden');
+            } else if (goal === 'bulk' || goal === 'strength' || goal === 'aesthetics') {
+                document.getElementById('plan-bulk').classList.remove('hidden');
+            } else {
+                // maintain, hyrox
+                document.getElementById('plan-maintain').classList.remove('hidden');
+            }
+
+            // Smooth scroll to results
+            document.getElementById('dynamicPlans').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
